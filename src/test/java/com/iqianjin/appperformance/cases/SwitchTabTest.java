@@ -1,20 +1,18 @@
 package com.iqianjin.appperformance.cases;
 
 import com.iqianjin.appperformance.BaseTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class SwitchTabTest extends BaseTest {
-    @Autowired
-    private BaseCase baseCase;
-    @Autowired
-    Login login;
-    @Autowired
-    SwitchTab switchTab;
+
     @Test
-    public void switchTab(){
-        baseCase.startMonitoring();
+    @DisplayName("切换四个tab")
+    public void switchTab() {
+        Login login = new Login();
+        SwitchTab switchTab = new SwitchTab();
+//        baseCase.startMonitoring();
         login.login("zzm001", "test123");
-        switchTab.changeTab(10);
+        switchTab.changeTab(20);
     }
 }

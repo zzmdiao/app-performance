@@ -1,39 +1,34 @@
 package com.iqianjin.appperformance.cases;
 
 import com.iqianjin.appperformance.BaseTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LendRecordTest extends BaseTest {
-    @Autowired
-    LendRecord lendRecord;
-    @Autowired
-    Login login;
-    @Autowired
-    BaseCase baseCase;
 
     @Test
+    @Order(1)
     @DisplayName("爱盈宝出借记录")
     public void aybProductRecordTest() {
-        baseCase.startMonitoring();
-        login.login("zzm003", "test123");
+        Login login = new Login();
+        LendRecord lendRecord = new LendRecord();
+        login.login("zzm005", "test123");
         lendRecord.aybProductRecord(3);
     }
 
     @Test
+    @Order(2)
     @DisplayName("整存宝+出借记录")
     public void zcbProductRecordTest() {
-        baseCase.startMonitoring();
-        login.login("zzm001", "test123");
+        LendRecord lendRecord = new LendRecord();
         lendRecord.zcbProductRecord(3);
     }
 
     @Test
+    @Order(3)
     @DisplayName("散标出借记录")
     public void sanbiaoProductRecordTest() {
-        baseCase.startMonitoring();
-        login.login("zzm001", "test123");
+        LendRecord lendRecord = new LendRecord();
         lendRecord.sanbiaoRecord(3);
     }
 

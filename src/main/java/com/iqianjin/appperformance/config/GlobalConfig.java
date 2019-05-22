@@ -9,12 +9,12 @@ import java.util.Map;
 @Component
 @ConfigurationProperties(prefix = "appium")
 public class GlobalConfig {
-
-    private String url;
-    private String app;
-    private Integer wait;
-    private Map<String, String> androidCapabilities = new HashMap<>();
-    private Map<String, String> iosCapabilities = new HashMap<>();
+    public static String url;
+    public static String app;
+    public static Integer wait;
+    public static String platformName;
+    public static Map<String, String> androidCapabilities = new HashMap<>();
+    public static Map<String, String> iosCapabilities = new HashMap<>();
 
     public String getUrl() {
         return url;
@@ -38,6 +38,14 @@ public class GlobalConfig {
 
     public void setWait(Integer wait) {
         this.wait = wait;
+    }
+
+    public String getPlatformName() {
+        return platformName;
+    }
+
+    public void setPlatformName(String platformName) {
+        this.platformName = platformName;
     }
 
     public Map<String, String> getAndroidCapabilities() {
