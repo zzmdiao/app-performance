@@ -7,7 +7,6 @@ public class InvestProduct extends BaseCase {
     private String join_product_edit_text = "金额输入框";
     private String join_product_confirm = "购买页立即投资按钮";
     private String confirmBuySubmit = "弹框确认投资按钮";
-    private String investBounced = "投资成功弹框";
     private String buySuccessCompplete = "购买成功页完成按钮";
 
     private String yjb_Title = "月进宝";
@@ -22,7 +21,7 @@ public class InvestProduct extends BaseCase {
             sendKeys(join_product_edit_text, amount);
             click(join_product_confirm);
             click(confirmBuySubmit);
-//            context_to_webview(investBounced);
+            clickWebview();
             click(buySuccessCompplete);
         }
     }
@@ -37,5 +36,13 @@ public class InvestProduct extends BaseCase {
             click(confirmBuySubmit);
             click(buySuccessCompplete);
         }
+    }
+
+    public static InvestProduct getInstance() {
+        return InvestProduct.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final InvestProduct INSTANCE = new InvestProduct();
     }
 }

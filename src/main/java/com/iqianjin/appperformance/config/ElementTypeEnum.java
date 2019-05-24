@@ -41,14 +41,19 @@ public class ElementTypeEnum {
         mapAndroid.put("购买页立即投资按钮", "id:join_product_confirm");
         mapAndroid.put("弹框确认投资按钮", "id:confirmBuySubmit");
         mapAndroid.put("购买成功页完成按钮", "id:submit");
-        mapAndroid.put("投资成功弹框", ".dialog-invest-close");
         //月进宝
-        mapAndroid.put("月进宝","xpath: //*[@text='月进宝']");
-        mapAndroid.put("立即投资按钮","id:productItemBtn");
-        mapAndroid.put("月进宝金额输入框","id:etAmount");
-        mapAndroid.put("月进宝立即投资按钮","id:joinProductConfirm");
+        mapAndroid.put("月进宝", "xpath: //*[@text='月进宝']");
+        mapAndroid.put("立即投资按钮", "id:productItemBtn");
+        mapAndroid.put("月进宝金额输入框", "id:etAmount");
+        mapAndroid.put("月进宝立即投资按钮", "id:joinProductConfirm");
         //我的-资金流水
         mapAndroid.put("资金流水", "xpath://*[@text='资金流水']");
+        mapAndroid.put("充值", "xpath://*[@text='充值']");
+        mapAndroid.put("提现", "xpath://*[@text='提现']");
+        mapAndroid.put("出借", "xpath://*[@text='出借']");
+        mapAndroid.put("回收", "xpath://*[@text='回收']");
+        mapAndroid.put("转让债权", "xpath://*[@text='转让债权']");
+        mapAndroid.put("冻结", "xpath://*[@text='冻结']");
         mapAndroid.put("资金流水日期", "id:tvFlowTime");
         /***************************** ios *****************************/
         //开机广告
@@ -75,7 +80,7 @@ public class ElementTypeEnum {
         mapIos.put("转让中", "id:转让中");
         mapIos.put("已转让", "id:已转让");
         mapIos.put("已结束", "id:已结束");
-        mapIos.put("没有更多","id:没有更多");
+        mapIos.put("没有更多", "id:没有更多");
         //todo 散标比好比对，修改id为对应账号的最后一个记录
         mapIos.put("散标出借记录期号", "id:I17N03003");
         //购买爱盈宝
@@ -84,14 +89,19 @@ public class ElementTypeEnum {
         mapIos.put("购买页立即投资按钮", "id:立即投资");
         mapIos.put("弹框确认投资按钮", "id:确认投资");
         mapIos.put("购买成功页完成按钮", "xpath://XCUIElementTypeApplication[@name=\"爱钱进\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeButton\n");
-        mapIos.put("投资成功弹框", ".dialog-invest-close");
         //月进宝
-        mapIos.put("月进宝","id:月进宝");
-        mapIos.put("立即投资按钮","id:立即投资");
-        mapIos.put("月进宝金额输入框","xpath://XCUIElementTypeTextField");
-        mapIos.put("月进宝立即投资按钮","id:立即投资");
+        mapIos.put("月进宝", "id:月进宝");
+        mapIos.put("立即投资按钮", "id:立即投资");
+        mapIos.put("月进宝金额输入框", "xpath://XCUIElementTypeTextField");
+        mapIos.put("月进宝立即投资按钮", "id:立即投资");
         //我的-资金流水
-        mapIos.put("资金流水", "xpath://*[@text='资金流水']");
+        mapIos.put("资金流水", "xpath://*[@name='资金流水']");
+        mapIos.put("充值", "id:充值");
+        mapIos.put("提现", "id:提现");
+        mapIos.put("出借", "id:出借");
+        mapIos.put("回收", "id:回收");
+        mapIos.put("转让债权", "id:转让债权");
+        mapIos.put("冻结", "id:冻结");
         mapIos.put("资金流水日期", "xpth://XCUIElementTypeStaticText");
     }
 

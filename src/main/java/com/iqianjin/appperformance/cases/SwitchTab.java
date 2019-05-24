@@ -11,4 +11,11 @@ public class SwitchTab extends BaseCase {
         }
     }
 
+    public static SwitchTab getInstance() {
+        return SwitchTab.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final SwitchTab INSTANCE = new SwitchTab();
+    }
 }

@@ -9,10 +9,7 @@ class SwitchTabTest extends BaseTest {
     @Test
     @DisplayName("切换四个tab")
     public void switchTab() {
-        Login login = new Login();
-        SwitchTab switchTab = new SwitchTab();
-//        baseCase.startMonitoring();
-        login.login("zzm001", "test123");
-        switchTab.changeTab(20);
+        Login.getInstance().login("zzm001", "test123");
+        SwitchTab.getInstance().changeTab(5);
     }
 }

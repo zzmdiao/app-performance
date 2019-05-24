@@ -1,7 +1,7 @@
 package com.iqianjin.appperformance.util;
 
 
-import com.iqianjin.appperformance.config.GlobalConfig;
+import com.iqianjin.appperformance.base.DriverManger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +14,9 @@ import static com.iqianjin.appperformance.util.ExcelUtil.getCurrentTime;
 // hprof-conv -z ./result/1558419108478.hprof ./result/1558419108478-2.hprof
 public class CommandUtil {
 	private static Logger logger = LoggerFactory.getLogger(CommandUtil.class);
+
+	public static String platformName = DriverManger.getInstance().getPlatform();
+
 	public  static  String getClientVersion(String packageName){
 		Runtime runtime = Runtime.getRuntime();
 		Process proc = null;
@@ -98,8 +101,7 @@ public class CommandUtil {
 	}
 	//开启或关闭android性能采集
 	public static void androidMonitoring(){
-		System.out.println(GlobalConfig.platformName);
-		if ("android".equalsIgnoreCase(GlobalConfig.platformName)){
+		if ("android".equalsIgnoreCase(platformName)){
 			exec2("adb shell am start -n com.iqianjin.client/com.didichuxing.doraemonkit.ui.UniversalActivity -e fragment_CONTENT 18");
 		}
 	}
@@ -125,7 +127,7 @@ public class CommandUtil {
 	}
 	//将android最后的结果文件导出
 	public static void getAndroidImportFile(){
-		if (("android").equalsIgnoreCase(GlobalConfig.platformName)){
+		if (("android").equalsIgnoreCase(platformName)){
 			sleep(3);
 			exec2("adb pull /sdcard/Android/data/com.iqianjin.client/files/doraemon/result/ .");
 			logger.info("开始转换hprof文件");

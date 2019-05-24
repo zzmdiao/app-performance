@@ -1,9 +1,11 @@
 package com.iqianjin.appperformance.cases;
 
+import com.iqianjin.appperformance.config.GlobalConfig;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +27,20 @@ public class Login extends BaseCase {
     public String loginAgain = "重新登录";
     public String cancle = "取消升级";
 
+    static Login login;
+
+    public static Login getInstance() {
+        if (login == null) {
+            login = new Login();
+        }
+        return login;
+    }
+
     /**
      * 判断是否已登录
      */
     public boolean isLogin() {
-        sleep(1);
-        logger.info("判断当前是否是登录状态");
+        boolean flag = false;
 
         if (appiumDriver.getPageSource().contains("发现新版本")) {
             click(cancle);
@@ -38,17 +48,18 @@ public class Login extends BaseCase {
 
         if (appiumDriver.getPageSource().contains("我的")) {
             click(myTab);
-            sleep(1);
             if (appiumDriver.getPageSource().contains("其他登录")) {
-                return false;
+                logger.info("判断当前是否是登录状态:{}", flag);
+                return flag;
             }
         }
 
-        if (appiumDriver.getPageSource().contains("忘记手势密码") || appiumDriver.getPageSource().contains("请绘制解锁图案")) {
-            return true;
+        String pageSource = appiumDriver.getPageSource();
+        if (pageSource.contains("忘记手势密码") || pageSource.contains("请绘制解锁图案")) {
+            flag = true;
         }
-
-        return true;
+        logger.info("判断当前是否是登录状态:{}", flag);
+        return flag;
     }
 
     /**
@@ -58,13 +69,7 @@ public class Login extends BaseCase {
      * @param pass
      */
     public void login(String user, String pass) {
-        if (appiumDriver.getPageSource().contains("允许")) {
-            appiumDriver.findElementById("button1").click();
-        }
-        if (appiumDriver.getPageSource().contains("允许出现在其他应用上")) {
-            appiumDriver.findElementById("switch_widget").click();
-            goBack();
-        }
+        sleep(3);
         if (appiumDriver.getPageSource().contains("跳过")) {
             click(tv_start);
         }
@@ -72,12 +77,13 @@ public class Login extends BaseCase {
         logger.info("开始进入注册/登录");
         if (isLogin()) {
             //尝试解锁
-            logger.info("当前是否登录:{}", isLogin());
+//            logger.info("当前是否登录:{}", isLogin());
             if (platformName.equalsIgnoreCase("android")) {
-                if (appiumDriver.getPageSource().contains("设置")) {
+                String pageSource2 = appiumDriver.getPageSource();
+                if (pageSource2.contains("设置")) {
                     return;
                 }
-                if (appiumDriver.getPageSource().contains("gestureLockPatternView")) {
+                if (pageSource2.contains("gestureLockPatternView")) {
                     getViewUnlockAndroid("gestureLockPatternView");
                 } else {
                     getViewUnlockAndroid("gestureSetLockView");
@@ -100,9 +106,7 @@ public class Login extends BaseCase {
                     loginAgain(user, pass);
                 }
             }
-        }
-        //登录
-        if (appiumDriver.getPageSource().contains("注册/登录爱钱进")) {
+        } else {
             click(otherLogin);
             loginAgain(user, pass);
         }
@@ -162,21 +166,26 @@ public class Login extends BaseCase {
     public void getViewUnlockIos() {
         logger.info("设置ios解锁图案L");
         List<WebElement> elements = appiumDriver.findElements(By.xpath("//XCUIElementTypeButton"));
+        Point firstElement = elements.get(0).getLocation();
+        Point thridElement = elements.get(3).getLocation();
+        Point sixElement = elements.get(6).getLocation();
+        Point sevenElement = elements.get(7).getLocation();
+        Point eightElement = elements.get(8).getLocation();
         //获取控件起始坐标的x、y
-        int bX = elements.get(0).getLocation().getX();
-        int bY = elements.get(0).getLocation().getY();
+        int bX = firstElement.getX();
+        int bY = firstElement.getY();
         // 第二个点的坐标
-        int twoX = elements.get(3).getLocation().getX();
-        int twoY = elements.get(3).getLocation().getY();
+        int twoX = thridElement.getX();
+        int twoY = thridElement.getY();
         // 第三个点的坐标
-        int threeX = elements.get(6).getLocation().getX();
-        int threeY = elements.get(6).getLocation().getY();
+        int threeX = sixElement.getX();
+        int threeY = sixElement.getY();
         // 第四个点的坐标
-        int fourX = elements.get(7).getLocation().getX();
-        int fourY = elements.get(7).getLocation().getY();
+        int fourX = sevenElement.getX();
+        int fourY = sevenElement.getY();
         // 第五个点的坐标
-        int fiveX = elements.get(8).getLocation().getX();
-        int fiveY = elements.get(8).getLocation().getY();
+        int fiveX = eightElement.getX();
+        int fiveY = eightElement.getY();
         TouchAction ta = new TouchAction(appiumDriver);
         Duration duration = Duration.ofMillis(500);
         ta.longPress(PointOption.point(bX, bY)).waitAction(WaitOptions.waitOptions(duration))
@@ -189,7 +198,9 @@ public class Login extends BaseCase {
     }
 
     public Boolean loginFail() {
-        if (appiumDriver.getPageSource().contains("忘记密码") && appiumDriver.getPageSource().contains("注册")) {
+        sleep(2);
+        String source = appiumDriver.getPageSource();
+        if (source.contains("忘记密码") && source.contains("注册")) {
             return true;
         }
         return false;

@@ -1,7 +1,6 @@
 package com.iqianjin.appperformance.cases;
 
 import com.iqianjin.appperformance.base.DriverManger;
-import com.iqianjin.appperformance.config.GlobalConfig;
 import com.iqianjin.appperformance.config.ElementTypeEnum;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
@@ -24,10 +23,9 @@ import static com.iqianjin.appperformance.util.CommandUtil.sleep;
 
 public class BaseCase {
     private static Logger logger = LoggerFactory.getLogger(BaseCase.class);
+    public AppiumDriver appiumDriver = DriverManger.getInstance().appiumDriver;
 
-    private DriverManger driverManger = new DriverManger();
-    public String platformName = GlobalConfig.platformName;
-    public static AppiumDriver appiumDriver = new DriverManger().createDriver();
+    public String platformName = DriverManger.getInstance().getPlatform();
 
     public String homeTab = "首页tab";
     public String productTab = "产品tab";
@@ -43,17 +41,14 @@ public class BaseCase {
             "id:dialogALeftButton",
             "xpath://*[@text='同意授权']")
             .collect(Collectors.toList());
-
-//    public WebElement find(String locatorName) {
-//
-//        WebElement element = null;
-//        try {
-//            element = findByWait(locatorName,3);
-//        } catch (Exception e) {
-//            element = findByWait(locatorName,3);
-//        }
-//        return element;
-//    }
+    //webView 元素
+    List<String> dialogsWebview = Stream.of(".dialog-invest-close")
+            .collect(Collectors.toList());
+    //ios左上角返回元素
+    List<String> iosBack = Stream.of("public back",
+            "ticket back n",
+            "public back white").
+            collect(Collectors.toList());
 
     /**
      * 等待timeOutInSeconds秒，每500毫秒查找一次，直到元素by出现
@@ -63,7 +58,7 @@ public class BaseCase {
      */
     public WebElement findByWait(String locatorName, long timeOutInSeconds) {
         WebElement element = null;
-        locatorName = driverManger.getElement(locatorName);
+        locatorName = getElement(locatorName);
         String locatorStrategy = locatorName.split(":")[0];
         String locatorValue = locatorName.split(":")[1];
         WebDriverWait wait = new WebDriverWait(appiumDriver, timeOutInSeconds, 500);
@@ -77,8 +72,10 @@ public class BaseCase {
             } else {
                 element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
             }
+
         } catch (Exception e) {
             logger.info("未找到元素locatorName:{},开始处理异常弹框元素", locatorName);
+            //首先判断是否是webview页面
             for (String temp : dialogs) {
                 locatorStrategy = temp.split(":")[0];
                 String locatorValueOther = temp.split(":")[1];
@@ -94,6 +91,25 @@ public class BaseCase {
             }
         }
 
+        return element;
+    }
+
+    public WebElement findByWait2(String locatorName, long timeOutInSeconds) {
+        WebElement element = null;
+        locatorName = getElement(locatorName);
+        String locatorStrategy = locatorName.split(":")[0];
+        String locatorValue = locatorName.split(":")[1];
+        WebDriverWait wait = new WebDriverWait(appiumDriver, timeOutInSeconds, 500);
+
+        try {
+            if ("id".equalsIgnoreCase(locatorStrategy)) {
+                element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorValue)));
+            } else {
+                element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorValue)));
+            }
+        } catch (Exception e) {
+            logger.info("忽略这个");
+        }
         return element;
     }
 
@@ -116,7 +132,7 @@ public class BaseCase {
     }
 
     public List<WebElement> findElements(String locatorName) {
-        locatorName = driverManger.getElement(locatorName);
+        locatorName = getElement(locatorName);
         String locatorStrategy = locatorName.split(":")[0];
         String locatorValue = locatorName.split(":")[1];
         if (locatorStrategy.equalsIgnoreCase("id")) {
@@ -128,13 +144,13 @@ public class BaseCase {
 
 
     public void click(String text) {
-        try {
-            findByWait(text, 2).click();
+        WebElement element = findByWait(text, 2);
+        if (element != null) {
+            element.click();
             logger.info("点击元素:{}", text);
-        } catch (Exception e) {
-            logger.info("报错了哈，再试一次:{}", text);
-            e.printStackTrace();
-            findByWait(text, 2).click();
+        } else {
+            logger.error("元素为空:{}", text);
+            goBack();
         }
     }
 
@@ -163,7 +179,7 @@ public class BaseCase {
 //    }
 
     /**
-     * 切换到webview
+     * 切换到webview,并进行点击操作
      * 注意：兼容性可能会有问题，参考https://github.com/appium/appium/blob/e35e4f7bae04aecd8dafe61af669b22adf71d621/docs/en/writing-running-appium/web/chromedriver.md
      * android：打包时需要开发同学打开webview调试模式：WebView.setWebContentsDebuggingEnabled(true)
      * ios：本地安装 brew install ios-webkit-debug-proxy，手机设置-safari-高级-web检查器打开
@@ -195,8 +211,46 @@ public class BaseCase {
         }
     }
 
+    public boolean isWebview() {
+        sleep(5);
+        Set<String> ContextHandles = appiumDriver.getContextHandles();
+        if (ContextHandles.size() == 1) {
+            return false;
+        } else {
+            ContextHandles.forEach((handle) -> {
+                if (handle.contains("WEBVIEW")) {
+                    logger.info("切换到webView:{}", handle);
+                    try {
+                        appiumDriver.context(handle);
+                    } catch (Exception e) {
+                        logger.error("当前handle是:{}", handle);
+                    }
+                }
+            });
+            return true;
+        }
+    }
+
+    public void clickWebview() {
+        if (isWebview()) {
+            for (String temp : dialogsWebview) {
+                try {
+                    WebElement element = appiumDriver.findElementByCssSelector(temp);
+                    if (element != null) {
+                        element.click();
+                    }
+                    logger.info("点击元素:{}", temp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        logger.info("切换到native");
+        appiumDriver.context("NATIVE_APP");
+    }
+
     /**
-     * 滑动到指定元素
+     * 上下滑动到指定元素
      *
      * @param to
      * @param from
@@ -205,34 +259,14 @@ public class BaseCase {
      */
     public WebElement swipUpWaitElement(double to, double from, String locatorName, long timeOutInSeconds) {
         WebElement element = null;
+        logger.info("滑动到指定元素:{}", locatorName);
         while (true) {
-            swipeUpOrDown(to, from);
-//            WebDriverWait wait = new WebDriverWait(appiumDriver, timeOutInSeconds, 500);
-//            element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
-            element = findByWait(locatorName, timeOutInSeconds);
+            element = findByWait2(locatorName, timeOutInSeconds);
             if (element != null) {
                 return element;
             }
+            swipeUpOrDown(to, from);
         }
-
-//        By by;
-//        WebDriverWait wait = new WebDriverWait(appiumDriver, timeOutInSeconds, 500);
-//        locatorName = driverManger.getElement(locatorName);
-//        String locatorStrategy = locatorName.split(":")[0];
-//        String locatorValue = locatorName.split(":")[1];
-//        while (true){
-//            swipeUpOrDown(to,from);
-//            if("id".equalsIgnoreCase(locatorStrategy)){
-//               by  = By.id(locatorValue);
-//            }else {
-//                by  = By.xpath(locatorValue);
-//            }
-//            element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
-//            logger.error("element:{}",element);
-//            if (null!=element){
-//                return element;
-//            }
-//        }
 
     }
 
@@ -266,10 +300,10 @@ public class BaseCase {
         int height = appiumDriver.manage().window().getSize().height;
         TouchAction action = new TouchAction(appiumDriver);
         try {
-            action.longPress(PointOption.point((int) (width * to), height / 2)).waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
-                    .moveTo(PointOption.point((int) (width * from), height / 2)).waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
+            action.longPress(PointOption.point((int) (width * to), height / 2)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(500)))
+                    .moveTo(PointOption.point((int) (width * from), height / 2)).waitAction(WaitOptions.waitOptions(Duration.ofMillis(500)))
                     .release().perform();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("向左or向右滑动失败");
             e.printStackTrace();
         }
@@ -278,23 +312,27 @@ public class BaseCase {
 
     /**
      * 滑动指定次数
+     *
      * @param to
      * @param from
      * @param num
      */
-    public void swipeToNum(double to, double from, int num){
-        if (appiumDriver.getPageSource().contains("去别处看看吧") || appiumDriver.getPageSource().contains("暂无预约记录") || appiumDriver.getPageSource().contains("暂无流水记录")) {
+    public void swipeToNum(double to, double from, int num) {
+        String pageSource = appiumDriver.getPageSource();
+        if (pageSource.contains("去别处看看吧") || pageSource.contains("暂无预约记录") || pageSource.contains("暂无流水记录") || pageSource.contains("暂无资金流水")) {
             return;
         }
-        for (int i=0;i<num; i++){
+        for (int i = 0; i < num; i++) {
             swipeUpOrDown(to, from);
         }
     }
+
     /**
      * 滑动到底部
      */
     public void swipeToBottom(double to, double from) {
-        if (appiumDriver.getPageSource().contains("去别处看看吧") || appiumDriver.getPageSource().contains("暂无预约记录") || appiumDriver.getPageSource().contains("暂无流水记录")) {
+        String pageSource = appiumDriver.getPageSource();
+        if (pageSource.contains("去别处看看吧") || pageSource.contains("暂无预约记录") || pageSource.contains("暂无流水记录") || pageSource.contains("暂无资金流水")) {
             return;
         } else {
             while (!appiumDriver.getPageSource().contains("没有更多")) {
@@ -312,32 +350,33 @@ public class BaseCase {
      */
     public void swipeToBottomSuper(String by, double to, double from) {
         sleep(1);
-        if (appiumDriver.getPageSource().contains("去别处看看吧") || appiumDriver.getPageSource().contains("暂无内容") || appiumDriver.getPageSource().contains("暂无预约记录") || appiumDriver.getPageSource().contains("暂无流水记录")) {
+        String pageSource = appiumDriver.getPageSource();
+        if (pageSource.contains("去别处看看吧") || pageSource.contains("暂无内容") || pageSource.contains("暂无预约记录") || pageSource.contains("暂无流水记录") || pageSource.contains("暂无资金流水")) {
             return;
         }
         List<WebElement> list = findElements(by);
         String pointTo = "";
-        if ("android".equalsIgnoreCase(platformName) && list.size()>0) {
+        if ("android".equalsIgnoreCase(platformName) && list.size() > 0) {
             pointTo = list.get(list.size() - 1).getAttribute("text");
-        } else if (list.size()>0){
-            pointTo = list.get(list.size() - 1).getAttribute("name");
+        } else if (list.size() > 0) {
+            pointTo = list.get(list.size() - 3).getAttribute("name");
         }
         boolean flag = true;
-
+        String pointFrom = "";
         while (flag) {
             swipeUpOrDown(to, from);
-            String pointFrom;
-            if (appiumDriver.getPageSource().contains("努力前进中") || appiumDriver.getPageSource().contains("上拉加载更多")) {
+            String pageSourceOther = appiumDriver.getPageSource();
+            if (pageSourceOther.contains("努力前进中") || pageSourceOther.contains("上拉加载更多")) {
                 logger.info("努力前进中or上拉加载更多");
                 swipeUpOrDown(to, from);
             }
-            if ("android".equalsIgnoreCase(platformName)) {
+            if ("android".equalsIgnoreCase(platformName) && list.size() > 0) {
                 pointFrom = list.get(list.size() - 1).getAttribute("text");
-            } else {
-                pointFrom = list.get(list.size() - 1).getAttribute("name");
+            } else if (list.size() > 0) {
+                pointFrom = list.get(list.size() - 3).getAttribute("name");
             }
             logger.info("pointTo值是:{}pointFrom值是:{}", pointTo, pointFrom);
-            if (pointTo.equals(pointFrom)) {
+            if (pointTo != null && pointFrom != null && pointTo.equals(pointFrom)) {
                 logger.info("页面再也划不动了");
                 flag = false;
             } else {
@@ -351,10 +390,17 @@ public class BaseCase {
      * 返回
      */
     public void goBack() {
-        if (platformName.equals("android")) {
+        if ("android".equalsIgnoreCase(platformName)) {
             appiumDriver.navigate().back();
         } else {
-            appiumDriver.findElementByXPath("//*[contains(name(), 'back')]").click();
+            for (String str : iosBack) {
+                WebElement element = findElementById(str);
+                if (element != null) {
+                    element.click();
+                    logger.info("点击元素:{}", element);
+                    break;
+                }
+            }
         }
     }
 
@@ -364,7 +410,7 @@ public class BaseCase {
         return s[s.length - 1];
     }
 
-    public void startMonitoring() {
+//    public void startMonitoring() {
 //        Thread t = new Thread(getPerformanceData);
 //        t.start();
 //        if ("android".equalsIgnoreCase(platformName)) {
@@ -375,10 +421,21 @@ public class BaseCase {
 //                }
 //            }).start();
 //        }
-    }
+//    }
 //    public void stopMonitoring(String sheetName){
 //        getPerformanceData.shutDown(sheetName);
 //    }
 
+    public String getElement(String ele) {
+
+        if (platformName.equalsIgnoreCase("android") && ele != null) {
+            return ElementTypeEnum.mapAndroid.get(ele);
+        } else if (platformName.equalsIgnoreCase("ios") && ele != null) {
+            return ElementTypeEnum.mapIos.get(ele);
+        } else {
+            logger.error("出现这个就炸了！！！");
+            return null;
+        }
+    }
 
 }

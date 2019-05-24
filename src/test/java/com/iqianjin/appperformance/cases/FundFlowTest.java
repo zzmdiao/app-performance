@@ -9,9 +9,8 @@ class FundFlowTest extends BaseTest {
     @Test
     @DisplayName("浏览资金流水")
     void fundTab() {
-        Login login = new Login();
-        FundFlow fundFlow = new FundFlow();
-        login.login("zzm005", "test123");
-        fundFlow.fundTab(3);
+        Login.getInstance().login("zzm005", "test123");
+        FundFlow.getInstance().fundTab(3);
     }
+
 }

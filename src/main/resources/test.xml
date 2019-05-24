@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><AppiumAUT><XCUIElementTypeApplication type="XCUIElementTypeApplication" name="爱钱进" label="爱钱进" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+    <XCUIElementTypeWindow type="XCUIElementTypeWindow" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+        <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+                <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+                    <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="0" width="414" height="736">
+                        <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="682" width="414" height="54">
+                            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="0" y="667" width="104" height="69">
+                                <XCUIElementTypeImage type="XCUIElementTypeImage" enabled="true" visible="true" x="21" y="667" width="61" height="49"/>
+                                <XCUIElementTypeStaticText type="XCUIElementTypeStaticText" value="首页" name="首页" label="首页" enabled="true" visible="true" x="40" y="716" width="23" height="12"/>
+                            </XCUIElementTypeOther>
+                            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="103" y="667" width="104" height="69">
+                                <XCUIElementTypeImage type="XCUIElementTypeImage" enabled="true" visible="true" x="124" y="667" width="61" height="49"/>
+                                <XCUIElementTypeStaticText type="XCUIElementTypeStaticText" value="产品" name="产品" label="产品" enabled="true" visible="true" x="143" y="716" width="23" height="12"/>
+                            </XCUIElementTypeOther>
+                            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="206" y="667" width="104" height="69">
+                                <XCUIElementTypeImage type="XCUIElementTypeImage" enabled="true" visible="true" x="227" y="667" width="61" height="49"/>
+                                <XCUIElementTypeStaticText type="XCUIElementTypeStaticText" value="发现" name="发现" label="发现" enabled="true" visible="true" x="246" y="716" width="23" height="12"/>
+                            </XCUIElementTypeOther>
+                            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="true" x="309" y="667" width="104" height="69">
+                                <XCUIElementTypeImage type="XCUIElementTypeImage" enabled="true" visible="true" x="330" y="667" width="61" height="49"/>
+                                <XCUIElementTypeStaticText type="XCUIElementTypeStaticText" value="我的" name="我的" label="我的" enabled="true" visible="true" x="349" y="716" width="23" height="12"/>
+                            </XCUIElementTypeOther>
+                            <XCUIElementTypeOther type="XCUIElementTypeOther" enabled="true" visible="false" x="0" y="682" width="414" height="1"/>
+                            <XCUIElementTypeImage type="XCUIElementTypeImage" enabled="true" visible="true" x="0" y="682" width="414" height="54"/>
+                        </XCUIElementTypeOther>
+                    </XCUIElementTypeOther>
+                </XCUIElementTypeOther>
+            </XCUIElementTypeOther>
+        </XCUIElementTypeOther>
+    </XCUIElementTypeWindow>
+
+</XCUIElementTypeApplication></AppiumAUT>

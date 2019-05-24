@@ -25,6 +25,13 @@ public class LendRecord extends BaseCase {
      */
     public void aybProductRecord(int num) {
         click(myTab);
+        for (int i = 0; i < 2; i++) {
+            logger.info("当前页面是否包含立即续期");
+            if (appiumDriver.getPageSource().contains("立即续期")) {
+                swipeUpOrDown(0.5, 0.1);
+            }
+        }
+        click(lendRecord);
         productRecrod(aybRecord, num);
     }
 
@@ -33,28 +40,21 @@ public class LendRecord extends BaseCase {
     }
 
     public void productRecrod(String by, int num) {
-        for (int i = 0; i < 2; i++) {
-            if (appiumDriver.getPageSource().contains("立即续期")) {
-                swipeUpOrDown(0.5, 0.2);
-            }
-        }
         for (int i = 0; i < num; i++) {
-            findByWait(lendRecord, 2).click();
             click(by);
             logger.info("开始滑动");
 //            swipeToBottom(0.5, 0.1);
-            swipeToNum(0.5,0.1,5);
+            swipeToNum(0.5, 0.1, 5);
             swipeLeftOrRight(0.8, 0.1);
 //            swipeToBottom(0.5, 0.1);
-            swipeToNum(0.5,0.1,5);
+            swipeToNum(0.5, 0.1, 5);
             goBack();
         }
     }
 
     public void sanbiaoRecord(int num) {
-
         for (int i = 0; i < num; i++) {
-            click(sanbiaoRecord);
+            swipUpWaitElement(0.5,0.1,sanbiaoRecord,5).click();
             swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
             click(inRecord);
             swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
@@ -66,5 +66,12 @@ public class LendRecord extends BaseCase {
         }
     }
 
+    public static LendRecord getInstance() {
+        return LendRecord.SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final LendRecord INSTANCE = new LendRecord();
+    }
 
 }
