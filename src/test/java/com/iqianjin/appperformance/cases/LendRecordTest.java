@@ -10,22 +10,26 @@ class LendRecordTest extends BaseTest {
     @Order(1)
     @DisplayName("爱盈宝出借记录")
     public void aybProductRecordTest() {
-        Login.getInstance().login("zzm005", "test123");
-        LendRecord.getInstance().aybProductRecord(1);
+        LendRecord.getInstance().aybProductRecord(num);
     }
 
     @Test
     @Order(2)
     @DisplayName("整存宝+出借记录")
     public void zcbProductRecordTest() {
-        LendRecord.getInstance().zcbProductRecord(1);
+        LendRecord.getInstance().zcbProductRecord(num);
     }
-
+    @Test
+    @Order(3)
+    @DisplayName("月进宝出借记录")
+    public void yjbProductRecordTest(){
+        LendRecord.getInstance().yjbProductRecord(num);
+    }
     @Test
     @Order(3)
     @DisplayName("散标出借记录")
     public void sanbiaoProductRecordTest() {
-        LendRecord.getInstance().sanbiaoRecord(3);
+        LendRecord.getInstance().sanbiaoRecord(num);
     }
 
 }

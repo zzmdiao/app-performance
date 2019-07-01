@@ -1,6 +1,5 @@
 package com.iqianjin.appperformance.cases;
 
-import com.iqianjin.appperformance.config.GlobalConfig;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.List;
 
+import static com.iqianjin.appperformance.util.CommandUtil.exec2;
 import static com.iqianjin.appperformance.util.CommandUtil.sleep;
 
 public class Login extends BaseCase {
@@ -26,6 +26,9 @@ public class Login extends BaseCase {
     public String gestureForget = "忘记手势密码";
     public String loginAgain = "重新登录";
     public String cancle = "取消升级";
+    public String setUP = "设置按钮";
+    public String loginOut = "退出登录";
+    public String confirmButton = "确认按钮";
 
     static Login login;
 
@@ -34,6 +37,37 @@ public class Login extends BaseCase {
             login = new Login();
         }
         return login;
+    }
+
+    /**
+     * 登录
+     *
+     * @param user
+     * @param pass
+     */
+    public void login(String user, String pass) {
+        if (appiumDriver.getPageSource().contains("跳过")) {
+            click(tv_start);
+        }
+        sleep(3);
+        logger.info("开始进入注册/登录");
+        if (isLogin()) {
+            if (appiumDriver.getPageSource().contains(user)){
+                logger.info("当前用户是同一个，尝试解锁");
+                setOneUnlock();
+                if (appiumDriver.getPageSource().contains("密码输入错误")){
+                    logOut(user);
+                    loginAgain(user, pass);
+                }
+            }else {
+                logOut(user);
+                loginAgain(user, pass);
+            }
+        } else {
+            click(otherLogin);
+            loginAgain(user, pass);
+        }
+
     }
 
     /**
@@ -62,57 +96,6 @@ public class Login extends BaseCase {
         return flag;
     }
 
-    /**
-     * 登录
-     *
-     * @param user
-     * @param pass
-     */
-    public void login(String user, String pass) {
-        sleep(3);
-        if (appiumDriver.getPageSource().contains("跳过")) {
-            click(tv_start);
-        }
-
-        logger.info("开始进入注册/登录");
-        if (isLogin()) {
-            //尝试解锁
-//            logger.info("当前是否登录:{}", isLogin());
-            if (platformName.equalsIgnoreCase("android")) {
-                String pageSource2 = appiumDriver.getPageSource();
-                if (pageSource2.contains("设置")) {
-                    return;
-                }
-                if (pageSource2.contains("gestureLockPatternView")) {
-                    getViewUnlockAndroid("gestureLockPatternView");
-                } else {
-                    getViewUnlockAndroid("gestureSetLockView");
-                    getViewUnlockAndroid("gestureSetLockView");
-                }
-            } else {
-                if (appiumDriver.getPageSource().contains("设置")) {
-                    return;
-                }
-                getViewUnlockIos();
-            }
-            //解锁失败，去登录
-            if (appiumDriver.getPageSource().contains("密码输入错误")) {
-                click(gestureForget);
-                click(loginAgain);
-                if ("android".equalsIgnoreCase(platformName)) {
-                    click(otherLogin);
-                    loginAgain(user, pass);
-                } else {
-                    loginAgain(user, pass);
-                }
-            }
-        } else {
-            click(otherLogin);
-            loginAgain(user, pass);
-        }
-
-    }
-
     public void loginAgain(String user, String pass) {
         for (int i = 0; i < 3; i++) {
             if (loginFail()) {
@@ -125,6 +108,44 @@ public class Login extends BaseCase {
             }
         }
 
+        setUnlock();
+        click(myTab);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @param
+     */
+    public void logOut(String user) {
+        String pagesource = appiumDriver.getPageSource();
+        if (pagesource.contains("忘记手势密码")) {
+            logger.info("当前页面包含《忘记手势密码》元素");
+            click(gestureForget);
+            click(loginAgain);
+            if ("android".equalsIgnoreCase(platformName)) {
+                click(otherLogin);
+            }
+        }
+        if (pagesource.contains("请绘制解锁图案")) {
+            setUnlock();
+            click(myTab);
+            if (appiumDriver.getPageSource().contains(user)){
+                return;
+            }
+            click(setUP);
+            swipeToNum(0.5, 0.1, 1);
+            click(loginOut);
+            click(confirmButton);
+            click(myTab);
+            click(otherLogin);
+        }
+    }
+
+    public void setUnlock() {
+        if (appiumDriver.getPageSource().contains("设置")) {
+            return;
+        }
         if ("android".equalsIgnoreCase(platformName)) {
             getViewUnlockAndroid("gestureSetLockView");
             getViewUnlockAndroid("gestureSetLockView");
@@ -132,7 +153,16 @@ public class Login extends BaseCase {
             getViewUnlockIos();
             getViewUnlockIos();
         }
-        click(myTab);
+    }
+    public void setOneUnlock() {
+        if (appiumDriver.getPageSource().contains("设置")) {
+            return;
+        }
+        if ("android".equalsIgnoreCase(platformName)) {
+            getViewUnlockAndroid("gestureLockPatternView");
+        } else {
+            getViewUnlockIos();
+        }
     }
 
     //根据view插件设置九宫格解锁
@@ -199,11 +229,19 @@ public class Login extends BaseCase {
 
     public Boolean loginFail() {
         sleep(2);
-        String source = appiumDriver.getPageSource();
-        if (source.contains("忘记密码") && source.contains("注册")) {
+        String pageSource = appiumDriver.getPageSource();
+
+        if (pageSource.contains("设置") || pageSource.contains("请绘制解锁图案")) {
+            return false;
+        } else {
             return true;
         }
-        return false;
     }
 
+    //查看手机的输入法 adb shell ime list -s
+    // Latin输入法
+    private final static String LIST_LATIN = "adb shell ime set com.android.inputmethod.latin/.LatinIME";
+    // Appium输入法
+    private final static String LIST_APPIUM = "adb shell ime set io.appium.android.ime/.UnicodeIME";
 }
+

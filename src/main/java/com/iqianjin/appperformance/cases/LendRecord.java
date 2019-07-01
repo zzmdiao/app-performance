@@ -17,6 +17,7 @@ public class LendRecord extends BaseCase {
     private String overRecord = "已结束";
     private String noMore = "没有更多";
     private String record_invert_item_issue = "散标出借记录期号";
+    private String yjbRecord = "月进宝记录";
 
     /**
      * num 循环次数
@@ -38,7 +39,9 @@ public class LendRecord extends BaseCase {
     public void zcbProductRecord(int num) {
         productRecrod(zcbRecord, num);
     }
-
+    public void yjbProductRecord(int num) {
+        productRecrod(yjbRecord, num);
+    }
     public void productRecrod(String by, int num) {
         for (int i = 0; i < num; i++) {
             click(by);
@@ -55,13 +58,17 @@ public class LendRecord extends BaseCase {
     public void sanbiaoRecord(int num) {
         for (int i = 0; i < num; i++) {
             swipUpWaitElement(0.5,0.1,sanbiaoRecord,5).click();
-            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+//            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+            swipeToNum(0.5,0.1,5);
             click(inRecord);
-            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+//            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+            swipeToNum(0.5,0.1,5);
             click(offecord);
-            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+//            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+            swipeToNum(0.5,0.1,5);
             click(overRecord);
-            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+//            swipeToBottomSuper(record_invert_item_issue, 0.5, 0.1);
+            swipeToNum(0.5,0.1,5);
             goBack();
         }
     }

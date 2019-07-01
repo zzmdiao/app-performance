@@ -2,7 +2,7 @@ appium:
   app: ""
   url: http://127.0.0.1:4723/wd/hub
   wait: 6
-  platName: android
+  platName: ios
   androidCapabilities:
     platformName: android
     platformVersion: 7.1.1
@@ -24,7 +24,7 @@ appium:
     #noReset: true
     startIWDP: true
     wdaStartupRetries: 2
-    wdaStartupRetryInterval: 5000
+    wdaStartupRetryInterval: 2000
     #iosInstallPause: 8000
     #showXcodeLog: true
     #showIOSLog: true

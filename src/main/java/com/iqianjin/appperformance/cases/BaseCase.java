@@ -34,12 +34,15 @@ public class BaseCase {
     public String tv_start = "开机广告";
 
     //异常的弹框，比如开机动画，都放在dialogs list
-    //todo:不支持webview
-    List<String> dialogs = Stream.of("xpath://*[@text='跳过']",
+    List<String> androidDialogs = Stream.of("xpath://*[@text='确认']",
             "id:createAccountBack",
             "xpath://*[@text='取消']",
             "id:dialogALeftButton",
             "xpath://*[@text='同意授权']")
+            .collect(Collectors.toList());
+    List<String> iosDialogs = Stream.of("xpath://*[@name='确认']",
+            "xpath://*[@name='取消']",
+            "xpath://*[@name='同意授权']")
             .collect(Collectors.toList());
     //webView 元素
     List<String> dialogsWebview = Stream.of(".dialog-invest-close")
@@ -52,9 +55,6 @@ public class BaseCase {
 
     /**
      * 等待timeOutInSeconds秒，每500毫秒查找一次，直到元素by出现
-     *
-     * @param locatorName
-     * @return
      */
     public WebElement findByWait(String locatorName, long timeOutInSeconds) {
         WebElement element = null;
@@ -75,22 +75,12 @@ public class BaseCase {
 
         } catch (Exception e) {
             logger.info("未找到元素locatorName:{},开始处理异常弹框元素", locatorName);
-            //首先判断是否是webview页面
-            for (String temp : dialogs) {
-                locatorStrategy = temp.split(":")[0];
-                String locatorValueOther = temp.split(":")[1];
-                if (locatorStrategy.equals("xpath") && null != findElementByXPath(locatorValueOther)) {
-                    logger.info("开始点击xpath元素locatorValue:{}", locatorValueOther);
-                    findElementByXPath(locatorValueOther).click();
-                    break;
-                } else if (locatorStrategy.equals("id") && null != findElementById(locatorValueOther)) {
-                    logger.info("开始点击id元素locatorValue:{}", locatorValueOther);
-                    findElementById(locatorValueOther).click();
-                    break;
-                }
+            if ("android".equalsIgnoreCase(platformName)) {
+                dealElement(androidDialogs);
+            } else {
+                dealElement(iosDialogs);
             }
         }
-
         return element;
     }
 
@@ -111,6 +101,29 @@ public class BaseCase {
             logger.info("忽略这个");
         }
         return element;
+    }
+
+    //处理异常弹窗
+    public void dealElement(List<String> list) {
+        for (String temp : list) {
+            String locatorStrategy = temp.split(":")[0];
+            String locatorValueOther = temp.split(":")[1];
+            if (locatorStrategy.equals("xpath")) {
+                WebElement tempElement = findElementByXPath(locatorValueOther);
+                if (null != tempElement) {
+                    logger.info("开始点击xpath元素locatorValueOther:{}", locatorValueOther);
+                    tempElement.click();
+                    break;
+                }
+            } else if (locatorStrategy.equals("id")) {
+                WebElement tempElement = findElementById(locatorValueOther);
+                if (null != tempElement) {
+                    logger.info("开始点击id元素locatorValueOther:{}", locatorValueOther);
+                    findElementById(locatorValueOther).click();
+                    break;
+                }
+            }
+        }
     }
 
     public WebElement findElementByXPath(String xpath) {
@@ -145,19 +158,30 @@ public class BaseCase {
 
     public void click(String text) {
         WebElement element = findByWait(text, 2);
-        if (element != null) {
+        if (null != element) {
             element.click();
             logger.info("点击元素:{}", text);
         } else {
-            logger.error("元素为空:{}", text);
-            goBack();
+            logger.info("再试一次，点击元素:{}",text);
+            findByWait2(text, 1).click();
         }
     }
 
 
     public void sendKeys(String locatorName, String content) {
-        findByWait(locatorName, 1).clear();
-        findByWait(locatorName, 1).sendKeys(content);
+//        if ("andorid".equalsIgnoreCase(platformName)){
+//            click(locatorName);
+//            content = "adb shell input text"+ content;
+//            exec2(content);
+//        }else {
+        WebElement webElement = findByWait(locatorName, 1);
+        if (null != webElement) {
+            webElement.clear();
+            webElement.sendKeys(content);
+        } else {
+            logger.error("input定位为空:{}", locatorName);
+        }
+//        }
     }
 
     /**
@@ -239,14 +263,15 @@ public class BaseCase {
                     if (element != null) {
                         element.click();
                     }
-                    logger.info("点击元素:{}", temp);
+                    logger.info("点击webview元素:{}", temp);
                 } catch (Exception e) {
+                    logger.error("找不到webview元素:{}", temp);
                     e.printStackTrace();
                 }
             }
+            logger.info("切换到native");
+            appiumDriver.context("NATIVE_APP");
         }
-        logger.info("切换到native");
-        appiumDriver.context("NATIVE_APP");
     }
 
     /**
@@ -258,7 +283,7 @@ public class BaseCase {
      * @param timeOutInSeconds
      */
     public WebElement swipUpWaitElement(double to, double from, String locatorName, long timeOutInSeconds) {
-        WebElement element = null;
+        WebElement element;
         logger.info("滑动到指定元素:{}", locatorName);
         while (true) {
             element = findByWait2(locatorName, timeOutInSeconds);
@@ -311,7 +336,7 @@ public class BaseCase {
     }
 
     /**
-     * 滑动指定次数
+     * 上下滑动指定次数
      *
      * @param to
      * @param from
@@ -351,7 +376,8 @@ public class BaseCase {
     public void swipeToBottomSuper(String by, double to, double from) {
         sleep(1);
         String pageSource = appiumDriver.getPageSource();
-        if (pageSource.contains("去别处看看吧") || pageSource.contains("暂无内容") || pageSource.contains("暂无预约记录") || pageSource.contains("暂无流水记录") || pageSource.contains("暂无资金流水")) {
+        if (pageSource.contains("去别处看看吧") || pageSource.contains("去别处看看吧~") || pageSource.contains("暂无内容")
+                || pageSource.contains("暂无预约记录") || pageSource.contains("暂无流水记录") || pageSource.contains("暂无资金流水")) {
             return;
         }
         List<WebElement> list = findElements(by);
@@ -397,7 +423,7 @@ public class BaseCase {
                 WebElement element = findElementById(str);
                 if (element != null) {
                     element.click();
-                    logger.info("点击元素:{}", element);
+                    logger.info("点击返回元素:{}", element);
                     break;
                 }
             }
@@ -436,6 +462,14 @@ public class BaseCase {
             logger.error("出现这个就炸了！！！");
             return null;
         }
+    }
+
+    public static BaseCase getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final BaseCase INSTANCE = new BaseCase();
     }
 
 }

@@ -102,6 +102,7 @@ public class CommandUtil {
 	//开启或关闭android性能采集
 	public static void androidMonitoring(){
 		if ("android".equalsIgnoreCase(platformName)){
+			logger.info("开启/关闭android监控");
 			exec2("adb shell am start -n com.iqianjin.client/com.didichuxing.doraemonkit.ui.UniversalActivity -e fragment_CONTENT 18");
 		}
 	}
@@ -127,8 +128,9 @@ public class CommandUtil {
 	}
 	//将android最后的结果文件导出
 	public static void getAndroidImportFile(){
-		if (("android").equalsIgnoreCase(platformName)){
-			sleep(3);
+		if ("android".equalsIgnoreCase(platformName)){
+			logger.info("pull android 数据到本地");
+			sleep(10);
 			exec2("adb pull /sdcard/Android/data/com.iqianjin.client/files/doraemon/result/ .");
 			logger.info("开始转换hprof文件");
 			String shpath = System.getProperty("user.dir")+"/result/changeFile.sh";

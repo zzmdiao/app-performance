@@ -20,15 +20,23 @@ public class ElementTypeEnum {
 
         //登录相关
         mapAndroid.put("其他登录", "id:registOtherLoginLl");
-        mapAndroid.put("用户名", "id:userNameEt");
+//        mapAndroid.put("用户名", "id:userNameEt");
+        mapAndroid.put("用户名", "xpath://*[@text='请输入手机号/用户名/邮箱']");
         mapAndroid.put("密码", "id:passwdStatusEt");
         mapAndroid.put("登录按钮", "id:loginSubmitTv");
         mapAndroid.put("忘记手势密码", "id:gestureForget");
         mapAndroid.put("重新登录", "xpath://*[@text='重新登录']");
-
+        mapAndroid.put("设置按钮", "id:tvSetting");
+        mapAndroid.put("退出登录", "xpath://*[@text='退出登录']");
+        mapAndroid.put("确认按钮", "id:dialogARightButton");
+        //注册
+        mapAndroid.put("注册按钮","id:loginBackRegistTv");
+        mapAndroid.put("注册下一步","id:registSubmitTv");
+        mapAndroid.put("注册页提示文案","id:registDescTv");
         //出借记录
         mapAndroid.put("出借记录", "xpath://*[@text='出借记录']");
         mapAndroid.put("爱盈宝", "xpath://*[@text='爱盈宝']");
+        mapAndroid.put("月进宝记录", "xpath://*[@text='月进宝']");
         mapAndroid.put("整存宝+", "xpath://*[@text='整存宝+']");
         mapAndroid.put("散标", "xpath://*[@text='散标']");
         mapAndroid.put("转让中", "xpath://*[@text='转让中']");
@@ -36,6 +44,7 @@ public class ElementTypeEnum {
         mapAndroid.put("已结束", "xpath://*[@text='已结束']");
         mapAndroid.put("散标出借记录期号", "id:record_invert_item_issue");
         //购买爱盈宝
+        mapAndroid.put("爱盈宝", "xpath: //*[@text='爱盈宝']");
         mapAndroid.put("三月期立即投资按钮", "xpath://*[@text='3']");
         mapAndroid.put("金额输入框", "id:join_product_edit_text");
         mapAndroid.put("购买页立即投资按钮", "id:join_product_confirm");
@@ -72,9 +81,13 @@ public class ElementTypeEnum {
         mapIos.put("登录按钮", "id:登录");
         mapIos.put("忘记手势密码", "id:忘记手势密码");
         mapIos.put("重新登录", "id:重新登录");
+        mapIos.put("设置按钮", "id:设置");
+        mapIos.put("退出登录", "id:退出登录");
+        mapIos.put("确认按钮", "id:确认");
         //出借记录
         mapIos.put("出借记录", "id:出借记录");
         mapIos.put("爱盈宝", "id:爱盈宝");
+        mapIos.put("月进宝记录", "id:月进宝");
         mapIos.put("整存宝+", "id:整存宝+");
         mapIos.put("散标", "id:散标");
         mapIos.put("转让中", "id:转让中");
@@ -84,6 +97,7 @@ public class ElementTypeEnum {
         //todo 散标比好比对，修改id为对应账号的最后一个记录
         mapIos.put("散标出借记录期号", "id:I17N03003");
         //购买爱盈宝
+        mapIos.put("爱盈宝", "id:爱盈宝");
         mapIos.put("三月期立即投资按钮", "xpath://XCUIElementTypeStaticText[@name='3']");
         mapIos.put("金额输入框", "xpath://XCUIElementTypeTextField");
         mapIos.put("购买页立即投资按钮", "id:立即投资");

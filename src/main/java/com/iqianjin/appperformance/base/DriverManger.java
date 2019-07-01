@@ -28,12 +28,14 @@ public class DriverManger {
     }
 
     public void createDriver() {
+
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         Yaml yaml = new Yaml();
         InputStream in = DriverManger.class.getResourceAsStream("/globalConfig.yml");
         GlobalConfig config = yaml.loadAs(in, GlobalConfig.class);
 
         if ("android".equalsIgnoreCase(config.getAppium().getPlatName())) {
+//        if ("android".equalsIgnoreCase(System.getProperty("platName"))){
             String chromedriverDir = System.getProperty("user.dir") + "/src/main/resources/chromedrivers";
             desiredCapabilities.setCapability("chromedriverExecutableDir", chromedriverDir);
             config.getAppium().getAndroidCapabilities().forEach((key, value) -> {
@@ -60,6 +62,7 @@ public class DriverManger {
 
     public String getPlatform() {
         return appiumDriver.getCapabilities().getCapability("platformName").toString();
+//        return System.getProperty("platName");
     }
 
 }
