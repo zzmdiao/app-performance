@@ -1,13 +1,40 @@
 package com.iqianjin.appperformance.cases;
 
+import com.iqianjin.appperformance.util.CommandUtil;
+
 public class SwitchTab extends BaseCase {
 
     public void changeTab(int number) {
+        // 先处理 首页我的 webview弹窗
+        if (isWebview()){
+            if ("android".equalsIgnoreCase(platformName)){
+                goBack();
+            }else {
+                clickWebview();
+            }
+        }
+        click(homeTab);
+        if (isWebview()){
+            if ("android".equalsIgnoreCase(platformName)){
+                goBack();
+            }else {
+                clickWebview();
+            }
+        }
+
         for (int i = 0; i < number; i++) {
-            click(homeTab);
-            click(productTab);
-            click(findTab);
-            click(myTab);
+            if (!click(homeTab)) {
+                continue;
+            }
+            if (!click(productTab)) {
+                continue;
+            }
+            if (!click(findTab)) {
+                continue;
+            }
+            if (!click(myTab)) {
+                continue;
+            }
         }
     }
 

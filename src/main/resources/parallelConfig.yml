@@ -1,0 +1,38 @@
+appium:
+  wait: 6
+  androidCapabilities:
+    url: http://127.0.0.1:4723/wd/hub
+    platformName: android
+    platformVersion: 7.1.1
+    udid: 95AQACQMEBSFB
+    systemPort: 8203
+    deviceName: test
+    appPackage: com.iqianjin.client
+    appActivity: asurface.activity.StartActivity
+    unicodeKeyboard: true
+    resetKeyboard: true
+    newCommandTimeout: 300
+    automationName: UiAutomator2
+    autoGrantPermission: true
+    printPageSourceOnFindFailure: true
+    noReset: true
+  iosCapabilities:
+    url: http://127.0.0.1:4723/wd/hub
+    platformName: ios
+    platformVersion: 10.3.2
+    wdaLocalPort: 8100
+    deviceName: iphone6p
+    bundleId: com.iqianjin.iqianjinplus
+    udid: 9a98c5f70037dbaaff8fa23839f83d3f3aae158f
+    automationName: XCUITest
+    printPageSourceOnFindFailure: true
+    noReset: true
+    startIWDP: true
+    wdaStartupRetries: 2
+    wdaStartupRetryInterval: 2000
+    newCommandTimeout: 300
+
+
+
+
+

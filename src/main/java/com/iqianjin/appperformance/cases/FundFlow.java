@@ -1,6 +1,7 @@
 package com.iqianjin.appperformance.cases;
 
 
+
 import static com.iqianjin.appperformance.util.CommandUtil.sleep;
 
 public class FundFlow extends BaseCase {
@@ -21,12 +22,15 @@ public class FundFlow extends BaseCase {
             swipeUpOrDown(0.5, 0.1);
         }
         for (int i = 0; i < num; i++) {
-            click(fundFlowTab);
+            boolean flag = click(fundFlowTab);
+            if (!flag) {
+                continue;
+            }
             swipFund(recharge);
             swipFund(cash);
             swipFund(lend);
             swipFund(recover);
-            if("android".equalsIgnoreCase(platformName)){
+            if ("android".equalsIgnoreCase(platformName)) {
                 swipFund(asignment);
                 swipFund(frozen);
             }
@@ -40,15 +44,15 @@ public class FundFlow extends BaseCase {
 //        } else {
 //            swipeToBottom(0.5, 0.1);
 //        }
-        swipeToNum(0.5,0.1,5);
+        swipeToNum(0.5, 0.1, 5);
         click(str);
     }
-
     public static FundFlow getInstance() {
-        return SingletonHolder.INSTANCE;
+        return FundFlow.SingletonHolder.INSTANCE;
     }
 
     private static class SingletonHolder {
         private static final FundFlow INSTANCE = new FundFlow();
     }
+
 }

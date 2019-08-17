@@ -2,12 +2,11 @@ package com.iqianjin.appperformance.getData;
 
 import com.iqianjin.appperformance.getData.manager.AppPerformanceDataManager;
 import com.iqianjin.appperformance.util.CommandUtil;
-import com.iqianjin.appperformance.util.ExcelUtil;
+import com.iqianjin.appperformance.util.ExcelUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,7 @@ public class GetPerformanceData implements Runnable {
         allList.add(fpsList);
         allList.add(lostFrameList);
         allList.add(batteryList);
-        ExcelUtil.createExcel(sheetName, allList);
+        ExcelUtils.createExcel(sheetName, allList);
     }
 
 }

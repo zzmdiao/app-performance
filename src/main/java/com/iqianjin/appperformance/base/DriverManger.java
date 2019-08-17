@@ -5,8 +5,6 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -15,7 +13,6 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class DriverManger {
-    private static Logger logger = LoggerFactory.getLogger(DriverManger.class);
 
     public AppiumDriver appiumDriver;
     static DriverManger driverManger;
@@ -28,7 +25,6 @@ public class DriverManger {
     }
 
     public void createDriver() {
-
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         Yaml yaml = new Yaml();
         InputStream in = DriverManger.class.getResourceAsStream("/globalConfig.yml");

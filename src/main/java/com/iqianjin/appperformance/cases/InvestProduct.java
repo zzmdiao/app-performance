@@ -2,6 +2,7 @@ package com.iqianjin.appperformance.cases;
 
 
 import com.iqianjin.appperformance.util.CommandUtil;
+import org.openqa.selenium.WebElement;
 
 public class InvestProduct extends BaseCase {
 
@@ -18,30 +19,43 @@ public class InvestProduct extends BaseCase {
 
     public void buyAYB(int num, String amount) {
         click(productTab);
-        click(ayb_Title);
+        // 切换环境后无法点击  StaticText is not visible on the screen and thus is not interactable
+        CommandUtil.sleep(3);
         for (int i = 0; i < num; i++) {
-            click(productTab);
-            click(threeInvestButton);
+            click(ayb_Title);
+
+            if (!click(threeInvestButton)) {
+                goBack();
+                continue;
+            }
             sendKeys(join_product_edit_text, amount);
             click(join_product_confirm);
             click(confirmBuySubmit);
-//            clickWebview();
+            if (isWebview()) {
+                if ("android".equalsIgnoreCase(platformName)){
+                    goBack();
+                }else {
+                    clickWebview();
+                }
+            }
             click(buySuccessCompplete);
+            click(productTab);
         }
-        click(productTab);
     }
 
     public void buyYJB(int num, String amount) {
         CommandUtil.sleep(1);
         click(productTab);
-        click(yjb_Title);
+        WebElement element = null;
         for (int i = 0; i < num; i++) {
-            click(productTab);
+            element = swipUpWaitElement(0.5, 0.1, yjb_Title);
+            clickElement(element);
             click(yjb_invest_button);
             sendKeys(yjb_product_amount, amount);
             click(yjb_product_confirm);
             click(confirmBuySubmit);
             click(buySuccessCompplete);
+            click(productTab);
         }
     }
 
@@ -52,4 +66,5 @@ public class InvestProduct extends BaseCase {
     private static class SingletonHolder {
         private static final InvestProduct INSTANCE = new InvestProduct();
     }
+
 }

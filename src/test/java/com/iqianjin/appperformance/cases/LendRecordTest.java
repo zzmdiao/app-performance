@@ -10,6 +10,7 @@ class LendRecordTest extends BaseTest {
     @Order(1)
     @DisplayName("爱盈宝出借记录")
     public void aybProductRecordTest() {
+        LendRecord.getInstance().getInstance().isRenewed();
         LendRecord.getInstance().aybProductRecord(num);
     }
 
@@ -19,12 +20,14 @@ class LendRecordTest extends BaseTest {
     public void zcbProductRecordTest() {
         LendRecord.getInstance().zcbProductRecord(num);
     }
+
     @Test
     @Order(3)
     @DisplayName("月进宝出借记录")
-    public void yjbProductRecordTest(){
+    public void yjbProductRecordTest() {
         LendRecord.getInstance().yjbProductRecord(num);
     }
+
     @Test
     @Order(3)
     @DisplayName("散标出借记录")
